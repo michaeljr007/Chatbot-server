@@ -43,7 +43,7 @@ const getResponse = async (req, res) => {
 
     // Add bot response to chat history
     chatHistory.push({
-      role: "bot",
+      role: "model",
       parts: [{ text: response }],
     });
 
