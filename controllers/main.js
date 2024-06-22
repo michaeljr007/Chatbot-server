@@ -4,6 +4,9 @@ const {
   HarmBlockThreshold,
 } = require("@google/generative-ai");
 
+// Define an array to store chat history
+let chatHistory = [];
+
 const getResponse = async (req, res) => {
   const { prompt: data } = req.body;
 
@@ -22,17 +25,37 @@ const getResponse = async (req, res) => {
     responseMimeType: "text/plain",
   };
 
+  // Pass the chat history to the chat session
   const chatSession = model.startChat({
     generationConfig,
-    // safetySettings: Adjust safety settings
-    // See https://ai.google.dev/gemini-api/docs/safety-settings
-    history: [],
+    history: chatHistory,
   });
 
-  const result = await chatSession.sendMessage(data);
-  const response = result.response.text();
+  try {
+    const result = await chatSession.sendMessage(data);
+    const response = result.response.text();
 
-  res.status(200).json({ msg: `  ${response}` });
+    // Add user message to chat history
+    chatHistory.push({
+      role: "user",
+      content: data,
+      timestamp: new Date(),
+    });
+
+    // Add bot response to chat history
+    chatHistory.push({
+      role: "bot",
+      content: response,
+      timestamp: new Date(),
+    });
+
+    res.status(200).json({ msg: response });
+  } catch (error) {
+    console.error("Error generating response:", error);
+    res
+      .status(500)
+      .json({ error: "Failed to get a response. Please try again." });
+  }
 };
 
 module.exports = {

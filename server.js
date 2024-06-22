@@ -12,7 +12,6 @@ const xss = require("xss-clean");
 const rateLimiter = require("express-rate-limit");
 
 // Middleware
-app.use(express.json());
 
 app.set("trust proxy", 1);
 app.use(
