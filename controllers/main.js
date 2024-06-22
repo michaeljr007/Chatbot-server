@@ -38,15 +38,13 @@ const getResponse = async (req, res) => {
     // Add user message to chat history
     chatHistory.push({
       role: "user",
-      content: data,
-      timestamp: new Date(),
+      parts: [{ text: data }],
     });
 
     // Add bot response to chat history
     chatHistory.push({
       role: "bot",
-      content: response,
-      timestamp: new Date(),
+      parts: [{ text: response }],
     });
 
     res.status(200).json({ msg: response });
